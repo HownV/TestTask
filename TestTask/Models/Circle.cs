@@ -38,8 +38,6 @@ namespace TestTask.Models
             } while (dx == 0 || dy == 0);
 
             Crossed += BeepWhenCrossed;
-            int h = 12;
-
         }
 
         public override void Draw(Graphics g, Pen pen)
