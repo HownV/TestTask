@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ArrayOfFigure xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Figure xsi:type="Triangle">
+    <x>240</x>
+    <y>370</y>
+    <dx>4</dx>
+    <dy>1</dy>
+    <color>/4pdZA==</color>
+    <A>
+      <X>73</X>
+      <Y>9</Y>
+    </A>
+    <B>
+      <X>25</X>
+      <Y>7</Y>
+    </B>
+    <C>
+      <X>0</X>
+      <Y>0</Y>
+    </C>
+    <_rightBorder>73</_rightBorder>
+    <_bottomBorder>9</_bottomBorder>
+  </Figure>
+  <Figure xsi:type="Circle">
+    <x>225</x>
+    <y>129</y>
+    <dx>2</dx>
+    <dy>-1</dy>
+    <color>/yvpdQ==</color>
+    <_radius>93</_radius>
+  </Figure>
+  <Figure xsi:type="Rectangle">
+    <x>552</x>
+    <y>393</y>
+    <dx>-1</dx>
+    <dy>-1</dy>
+    <color>/wCbMw==</color>
+    <_height>93</_height>
+    <_width>159</_width>
+  </Figure>
+</ArrayOfFigure>
