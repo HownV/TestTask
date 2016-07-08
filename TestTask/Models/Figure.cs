@@ -23,23 +23,29 @@ namespace TestTask.Models
         public const int MaxSize = 200;
 
         [DataMember]
-        public int x;
+        public int X { get; set; }
         [DataMember]
-        public int y;
+        public int Y { get; set; }
         [DataMember]
-        public int dx;
+        public int Dx { get; set; }
         [DataMember]
-        public int dy;
+        public int Dy { get; set; }
         [DataMember]
-        public byte[] Color;
+        public byte[] Color { get; set; }
 
-        public event EventHandler<FigureEventArgs> Crossed;
+        public virtual int RightBorder { get; set; }
+        public virtual int BottomBorder { get; set; }
+
+        protected bool IsDxReversed;
+        protected bool IsDyReversed;
+
+        public virtual event EventHandler<FigureEventArgs> Crossed;
 
         public Figure()
         {
         }
 
-        public virtual void Move(int xMax, int yMax)
+        public virtual void Move(int xMax, int yMaxm)
         {
         }
 
@@ -56,19 +62,25 @@ namespace TestTask.Models
         {
             MessageBox.Show("Hello from IDrawable");
         }
-
-        public virtual void OnCrossed()
-        {
-        }
-
+        
         public void BeepWhenCrossed(object sender, FigureEventArgs e)
         {
             Console.Beep();
         }
 
-        public virtual void AddBeep()
+        public void AddBeep()
         {
             Crossed += BeepWhenCrossed;
+        }
+
+        public void ReverseDx(bool isRun)
+        {
+            IsDxReversed = true;
+        }
+
+        public void ReverseDy(bool isRun)
+        {
+            IsDyReversed = true;
         }
     }
 }

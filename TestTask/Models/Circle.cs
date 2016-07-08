@@ -18,7 +18,10 @@ namespace TestTask.Models
         [DataMember]
         public int Radius { get; set; }
 
-        //public sealed override event EventHandler<FigureEventArgs> Crossed;
+        public override int RightBorder => X + Radius*2;
+        public override int BottomBorder => Y + Radius*2;
+
+        public sealed override event EventHandler<FigureEventArgs> Crossed;
 
         public Circle()
         {
@@ -29,45 +32,40 @@ namespace TestTask.Models
             Radius = Randomizer.GetInt32(15, MaxSize / 2);
             Color = Randomizer.GetColorAsByteArray();
 
-            x = Randomizer.GetInt32(xMax - MaxSize);
-            y = Randomizer.GetInt32(yMax - MaxSize);
+            X = Randomizer.GetInt32(xMax - MaxSize);
+            Y = Randomizer.GetInt32(yMax - MaxSize);
             do
             {
-                dx = Randomizer.GetInt32(-4, 4);
-                dy = Randomizer.GetInt32(-4, 4);
-            } while (dx == 0 || dy == 0);
-
+                Dx = Randomizer.GetInt32(-4, 4);
+                Dy = Randomizer.GetInt32(-4, 4);
+            } while (Dx == 0 && Dy == 0);
+            
             Crossed += BeepWhenCrossed;
         }
 
         public override void Draw(Graphics g, Pen pen)
         {
             pen.Color = System.Drawing.Color.FromArgb(Color[0], Color[1], Color[2], Color[3]);
-            g.DrawEllipse(pen, new System.Drawing.Rectangle(x, y, 2 * Radius, 2 * Radius));
+            g.DrawEllipse(pen, new System.Drawing.Rectangle(X, Y, 2 * Radius, 2 * Radius));
         }
 
         public override void Move(int xMax, int yMax)
         {
-            if (x < 0 || x > xMax - Radius*2)
-            {
-                dx = -dx;
-                OnCrossed();
-            }
-            if (y < 0 || y > yMax - Radius*2)
-            {
-                dy = -dy;
-                OnCrossed();
-            }
-            x += dx;
-            y += dy;
-        }
+            //if ()
+            //    Dx = -Dx;
+            //if ()
+            //    Dy = -Dy;
 
-        public override void OnCrossed()
-        {
-            FigureEventArgs e = new FigureEventArgs();
-            if (Crossed != null) Crossed.Invoke(this, e);
-            else AddBeep();
+            if (IsDxReversed || X < 0 || X > xMax - Radius * 2)
+            {
+                Dx = -Dx;
+            }
+            if (IsDyReversed || Y < 0 || Y > yMax - Radius * 2)
+            {
+                Dy = -Dy;
+            }
+            X += Dx;
+            Y += Dy;
         }
-        
     }
 }

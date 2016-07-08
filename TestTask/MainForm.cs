@@ -48,13 +48,40 @@ namespace TestTask
         
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
-            Graphics g = e.Graphics;
-
-            for(int i = 0; i < _figures.Count; i++)
+            if (_figures.Count > 0)
             {
-                if (_isRun[i])
-                    _figures[i].Move(pbMain.Width, pbMain.Height);
-                _figures[i].Draw(g, _pen);
+                Graphics g = e.Graphics;
+                for (int i = 0; i < _figures.Count; i++)
+                {
+                    for (int j = 0; j < _figures.Count; j++)
+                    {
+                        if (i == j)
+                            continue;
+                        if ((_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
+                            || (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder))
+                        {
+                            if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                                || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                            {
+                                _figures[i].ReverseDx(_isRun[i]);
+                            }
+                        }
+                        else if (_figures[i].X >= _figures[j].X && _figures[i].RightBorder <= _figures[j].RightBorder)
+                        {
+                            if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                                || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                            {
+                                _figures[i].ReverseDy(_isRun[i]);
+                            }
+                        }
+                    }
+                }
+                for (int i = 0; i < _figures.Count; i++)
+                {
+                    if (_isRun[i])
+                        _figures[i].Move(pbMain.Width, pbMain.Height);
+                    _figures[i].Draw(g, _pen);
+                }
             }
         }
 

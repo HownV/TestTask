@@ -21,10 +21,13 @@ namespace TestTask.Models
         [DataMember(Name = "c")]
         public Point C;
 
+        public override int RightBorder => X + RightOffset * 2;
+        public override int BottomBorder => Y + BottomOffset * 2;
+
         [DataMember]
-        public int RightBorder;
+        public readonly int RightOffset;
         [DataMember]
-        public int BottomBorder;
+        public readonly int BottomOffset;
 
         //public event EventHandler<FigureEventArgs> Crossed;
 
@@ -43,49 +46,56 @@ namespace TestTask.Models
 
             Color = Randomizer.GetColorAsByteArray();
 
-            x = Randomizer.GetInt32(xMax - MaxSize);
-            y = Randomizer.GetInt32(yMax - MaxSize);
+            X = Randomizer.GetInt32(xMax - MaxSize);
+            Y = Randomizer.GetInt32(yMax - MaxSize);
             do
             {
-                dx = Randomizer.GetInt32(-4, 4);
-                dy = Randomizer.GetInt32(-4, 4);
-            } while (dx == 0 || dy == 0);
+                Dx = Randomizer.GetInt32(-4, 4);
+                Dy = Randomizer.GetInt32(-4, 4);
+            } while (Dx == 0 && Dy == 0);
             
-            int leftBorder = Math.Min(Math.Min(A.X, B.X), Math.Min(B.X, C.X));
-            A.X -= leftBorder;
-            B.X -= leftBorder;
-            C.X -= leftBorder;
+            int leftOffset = Math.Min(Math.Min(A.X, B.X), Math.Min(B.X, C.X));
+            A.X -= leftOffset;
+            B.X -= leftOffset;
+            C.X -= leftOffset;
 
-            int heightBorder = Math.Min(Math.Min(A.Y, B.Y), Math.Min(B.Y, C.Y));
-            A.Y -= heightBorder;
-            B.Y -= heightBorder;
-            C.Y -= heightBorder;
+            int topOffset = Math.Min(Math.Min(A.Y, B.Y), Math.Min(B.Y, C.Y));
+            A.Y -= topOffset;
+            B.Y -= topOffset;
+            C.Y -= topOffset;
 
-            RightBorder = Math.Max(Math.Max(A.X, B.X), Math.Max(B.X, C.X));
-            BottomBorder = Math.Max(Math.Max(A.Y, B.Y), Math.Max(B.Y, C.Y));
+            RightOffset = Math.Max(Math.Max(A.X, B.X), Math.Max(B.X, C.X));
+            BottomOffset = Math.Max(Math.Max(A.Y, B.Y), Math.Max(B.Y, C.Y));
         }
 
         public override void Draw(Graphics g, Pen pen)
         {
             pen.Color = System.Drawing.Color.FromArgb(Color[0], Color[1], Color[2], Color[3]);
-            g.DrawLine(pen, A.X + x, A.Y + y, B.X + x, B.Y + y);
-            g.DrawLine(pen, B.X + x, B.Y + y, C.X + x, C.Y + y);
-            g.DrawLine(pen, C.X + x, C.Y + y, A.X + x, A.Y + y);
+            g.DrawLine(pen, A.X + X, A.Y + Y, B.X + X, B.Y + Y);
+            g.DrawLine(pen, B.X + X, B.Y + Y, C.X + X, C.Y + Y);
+            g.DrawLine(pen, C.X + X, C.Y + Y, A.X + X, A.Y + Y);
         }
 
         public override void Move(int xMax, int yMax)
         {
-            if (x < 0 || x > xMax - RightBorder)
-                dx = -dx;
-            if (y < 0 || y > yMax - BottomBorder)
-                dy = -dy;
-            x += dx;
-            y += dy;
-        }
+            //if ()
+            //    Dx = -Dx;
+            //if ()
+            //    Dy = -Dy;
 
-        public override void OnCrossed()
-        {
-            throw new NotImplementedException();
+            if (IsDxReversed || X < 0 || X > xMax - RightOffset)
+            {
+                Dx = -Dx;
+                IsDxReversed = false;
+            }
+
+            if (IsDyReversed || Y < 0 || Y > yMax - BottomOffset)
+            {
+                Dy = -Dy;
+                IsDyReversed = false;
+            }
+            X += Dx;
+            Y += Dy;
         }
     }
 }

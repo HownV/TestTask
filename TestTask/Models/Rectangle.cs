@@ -19,6 +19,9 @@ namespace TestTask.Models
         [DataMember]
         public int Width;
 
+        public override int RightBorder => X + Width * 2;
+        public override int BottomBorder => Y + Height * 2;
+
         //public override event EventHandler<FigureEventArgs> Crossed;
 
         public Rectangle()
@@ -31,37 +34,37 @@ namespace TestTask.Models
             Width = Randomizer.GetInt32(25, MaxSize);
             Color = Randomizer.GetColorAsByteArray();
 
-            x = Randomizer.GetInt32(xMax - MaxSize);
-            y = Randomizer.GetInt32(yMax - MaxSize);
+            X = Randomizer.GetInt32(xMax - MaxSize);
+            Y = Randomizer.GetInt32(yMax - MaxSize);
             do
             {
-                dx = Randomizer.GetInt32(-4, 4);
-                dy = Randomizer.GetInt32(-4, 4);
-            } while (dx == 0 || dy == 0);
+                Dx = Randomizer.GetInt32(-4, 4);
+                Dy = Randomizer.GetInt32(-4, 4);
+            } while (Dx == 0 && Dy == 0);
         }
 
         public override void Draw(Graphics g, Pen pen)
         {
             pen.Color = System.Drawing.Color.FromArgb(Color[0], Color[1], Color[2], Color[3]);
-            g.DrawLine(pen, x, y, x + Width, y);
-            g.DrawLine(pen, x + Width, y, x + Width, y + Height);
-            g.DrawLine(pen, x + Width, y + Height, x, y + Height);
-            g.DrawLine(pen, x, y + Height, x, y);
+            g.DrawLine(pen, X, Y, X + Width, Y);
+            g.DrawLine(pen, X + Width, Y, X + Width, Y + Height);
+            g.DrawLine(pen, X + Width, Y + Height, X, Y + Height);
+            g.DrawLine(pen, X, Y + Height, X, Y);
         }
 
         public override void Move(int xMax, int yMax)
         {
-            if (x < 0 || x > xMax - Width)
-                dx = -dx;
-            if (y < 0 || y > yMax - Height)
-                dy = -dy;
-            x += dx;
-            y += dy;
-        }
+            //if ()
+            //    Dx = -Dx;
+            //if ()
+            //    Dy = -Dy;
 
-        public override void OnCrossed()
-        {
-            throw new NotImplementedException();
+            if (IsDxReversed || X < 0 || X > xMax - Width)
+                Dx = -Dx;
+            if (IsDyReversed || Y < 0 || Y > yMax - Height)
+                Dy = -Dy;
+            X += Dx;
+            Y += Dy;
         }
     }
 }

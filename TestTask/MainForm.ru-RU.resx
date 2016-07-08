@@ -175,4 +175,10 @@
   <data name="checkInterfaceColizionToolStripMenuItem.Text" xml:space="preserve">
     <value>Проверить коллизию интерфейсов</value>
   </data>
+  <data name="btnStopRun.Text.Run" xml:space="preserve">
+    <value>Запуск</value>
+  </data>
+  <data name="btnStopRun.Text.Stop" xml:space="preserve">
+    <value>Стоп</value>
+  </data>
 </root>
