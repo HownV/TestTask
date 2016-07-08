@@ -19,8 +19,8 @@ namespace TestTask.Models
         [DataMember]
         public int Width;
 
-        public override int RightBorder => X + Width * 2;
-        public override int BottomBorder => Y + Height * 2;
+        public override int RightBorder => X + Width;
+        public override int BottomBorder => Y + Height;
 
         //public override event EventHandler<FigureEventArgs> Crossed;
 
@@ -60,9 +60,16 @@ namespace TestTask.Models
             //    Dy = -Dy;
 
             if (IsDxReversed || X < 0 || X > xMax - Width)
+            {
                 Dx = -Dx;
+                IsDxReversed = false;
+            }
             if (IsDyReversed || Y < 0 || Y > yMax - Height)
+            {
                 Dy = -Dy;
+                IsDyReversed = false;
+            }
+
             X += Dx;
             Y += Dy;
         }

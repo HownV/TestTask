@@ -21,8 +21,8 @@ namespace TestTask.Models
         [DataMember(Name = "c")]
         public Point C;
 
-        public override int RightBorder => X + RightOffset * 2;
-        public override int BottomBorder => Y + BottomOffset * 2;
+        public override int RightBorder => X + RightOffset;
+        public override int BottomBorder => Y + BottomOffset;
 
         [DataMember]
         public readonly int RightOffset;

@@ -59,10 +59,12 @@ namespace TestTask.Models
             if (IsDxReversed || X < 0 || X > xMax - Radius * 2)
             {
                 Dx = -Dx;
+                IsDxReversed = false;
             }
             if (IsDyReversed || Y < 0 || Y > yMax - Radius * 2)
             {
                 Dy = -Dy;
+                IsDyReversed = false;
             }
             X += Dx;
             Y += Dy;

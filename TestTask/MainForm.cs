@@ -55,23 +55,57 @@ namespace TestTask
                 {
                     for (int j = 0; j < _figures.Count; j++)
                     {
+                        //if (i == j)
+                        //    continue;
+                        //if ((_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
+                        //        //&& _figures[i].RightBorder <= _figures[j].RightBorder)
+                        //    || (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder 
+                        //        && _figures[i].RightBorder >= _figures[j].RightBorder))
+                        //{
+                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                        //    {
+                        //        //if(_figures[i].Dx)
+                        //        _figures[i].ReverseDx(_isRun[i]);
+                        //    }
+                        //}
+                        //else if (_figures[i].X >= _figures[j].X && _figures[i].RightBorder <= _figures[j].RightBorder)
+                        //{
+                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                        //    {
+                        //        _figures[i].ReverseDy(_isRun[i]);
+                        //    }
+                        //}
+
+                        // новая эра
                         if (i == j)
                             continue;
-                        if ((_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
-                            || (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder))
+                        if (_figures[i].X < _figures[j].X && _figures[i].RightBorder >= _figures[j].X
+                            && ((_figures[i].Y <_figures[j].Y && _figures[i].BottomBorder > _figures[j].Y) || 
+                            (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder) ||
+                            (_figures[i].Y < _figures[j].BottomBorder && _figures[i].BottomBorder > _figures[j].BottomBorder)))
                         {
-                            if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
-                                || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
-                            {
-                                _figures[i].ReverseDx(_isRun[i]);
-                            }
+                            if(_figures[i].Dx > 0)
+                                _figures[i].ReverseDx(_isRun[i]); // столкновение чётко слева
+                            else 
+                                _figures[i].ReverseDy(_isRun[i]); // столкновение справа
                         }
-                        else if (_figures[i].X >= _figures[j].X && _figures[i].RightBorder <= _figures[j].RightBorder)
+                        else if (_figures[i].X > _figures[j].X && _figures[i].X <= _figures[j].RightBorder 
+                            && ((_figures[i].Y < _figures[j].Y && _figures[i].BottomBorder > _figures[j].Y) ||
+                            (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder) ||
+                            (_figures[i].Y < _figures[j].BottomBorder && _figures[i].BottomBorder > _figures[j].BottomBorder)))
                         {
-                            if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
-                                || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                            if (_figures[i].RightBorder > _figures[j].RightBorder)
                             {
-                                _figures[i].ReverseDy(_isRun[i]);
+                                if (_figures[i].Dx < 0)
+                                    _figures[i].ReverseDx(_isRun[i]); //столкновение чётко справа
+                                else
+                                    _figures[i].ReverseDy(_isRun[i]); //столкновение слева
+                            }
+                            else
+                            {
+                                _figures[i].ReverseDy(_isRun[i]); // столкновение посередине
                             }
                         }
                     }

@@ -124,15 +124,18 @@
   <data name="tsSeparator.Size" type="System.Drawing.Size, System.Drawing">
     <value>118, 6</value>
   </data>
-  <data name="cbLocalization.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 21</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>884, 611</value>
+  </data>
+  <data name="btnRectangle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>168, 3</value>
+  </data>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="btnStopRun.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>500, 500</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnRectangle.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
   </data>
   <data name="btnTriangle.Text" xml:space="preserve">
     <value>Triangle</value>
@@ -158,14 +161,14 @@
   <data name="openToolStripMenuItem.Text" xml:space="preserve">
     <value>Open</value>
   </data>
-  <data name="btnStopRun.Location" type="System.Drawing.Point, System.Drawing">
-    <value>656, 3</value>
+  <data name="&gt;&gt;cbLocalization.Parent" xml:space="preserve">
+    <value>pnlButtons</value>
   </data>
   <data name="btnRectangle.Text" xml:space="preserve">
     <value>Rectangle</value>
   </data>
-  <data name="btnStopRun.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="btnRectangle.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="btnTriangle.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 22</value>
@@ -228,8 +231,8 @@
   <data name="btnStopRun.Text" xml:space="preserve">
     <value>Stop</value>
   </data>
-  <data name="&gt;&gt;cbLocalization.Parent" xml:space="preserve">
-    <value>pnlButtons</value>
+  <data name="btnStopRun.Text.Stop" xml:space="preserve">
+    <value>Stop</value>
   </data>
   <data name="cbLocalization.Items1" xml:space="preserve">
     <value>Русский</value>
@@ -252,6 +255,9 @@
   <data name="pnlButtons.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
+  <data name="listViewFigures.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 65</value>
+  </data>
   <data name="&gt;&gt;btnTriangle.Parent" xml:space="preserve">
     <value>pnlButtons</value>
   </data>
@@ -269,9 +275,6 @@
   </data>
   <data name="&gt;&gt;timer.Type" xml:space="preserve">
     <value>System.Windows.Forms.Timer, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;cbLocalization.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;menuStrip.Name" xml:space="preserve">
     <value>menuStrip</value>
@@ -378,8 +381,8 @@
   <data name="cbLocalization.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
-  <data name="listViewFigures.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 65</value>
+  <data name="btnStopRun.Text.Run" xml:space="preserve">
+    <value>Run</value>
   </data>
   <data name="&gt;&gt;listViewFigures.Type" xml:space="preserve">
     <value>System.Windows.Forms.ListView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -426,11 +429,14 @@
   <data name="checkInterfaceColizionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>153, 20</value>
   </data>
+  <data name="btnCircle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>86, 3</value>
+  </data>
   <data name="listViewFigures.Size" type="System.Drawing.Size, System.Drawing">
     <value>122, 534</value>
   </data>
-  <data name="btnCircle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>86, 3</value>
+  <data name="cbLocalization.Size" type="System.Drawing.Size, System.Drawing">
+    <value>120, 21</value>
   </data>
   <data name="checkMyListToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>90, 20</value>
@@ -438,8 +444,8 @@
   <data name="&gt;&gt;btnCircle.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>884, 611</value>
+  <data name="&gt;&gt;openToolStripMenuItem.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Name" xml:space="preserve">
     <value>MainForm</value>
@@ -450,37 +456,31 @@
   <data name="exitToolStripMenuItem.Text" xml:space="preserve">
     <value>Exit</value>
   </data>
-  <data name="&gt;&gt;openToolStripMenuItem.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;cbLocalization.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;checkMyListToolStripMenuItem.Name" xml:space="preserve">
     <value>checkMyListToolStripMenuItem</value>
   </data>
-  <data name="btnRectangle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>168, 3</value>
+  <data name="btnStopRun.Location" type="System.Drawing.Point, System.Drawing">
+    <value>656, 3</value>
   </data>
   <data name="&gt;&gt;btnStopRun.Parent" xml:space="preserve">
     <value>pnlButtons</value>
   </data>
-  <data name="$this.Language" type="System.Globalization.CultureInfo, mscorlib">
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>en-US</value>
-  </data>
-  <data name="$this.Localizable" type="System.Boolean, mscorlib">
+  </metadata>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
-  </data>
-  <data name="$this.TrayHeight" type="System.Int32, mscorlib">
+  </metadata>
+  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>38</value>
-  </data>
-  <data name="timer.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  </metadata>
+  <metadata name="timer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </data>
-  <data name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  </metadata>
+  <metadata name="menuStrip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>97, 17</value>
-  </data>
-  <data name="btnStopRun.Text.Run" xml:space="preserve">
-    <value>Run</value>
-  </data>
-  <data name="btnStopRun.Text.Stop" xml:space="preserve">
-    <value>Stop</value>
-  </data>
+  </metadata>
 </root>

@@ -75,12 +75,14 @@ namespace TestTask.Models
 
         public void ReverseDx(bool isRun)
         {
-            IsDxReversed = true;
+            if(isRun)
+                IsDxReversed = true;
         }
 
         public void ReverseDy(bool isRun)
         {
-            IsDyReversed = true;
+            if (isRun)
+                IsDyReversed = true;
         }
     }
 }
