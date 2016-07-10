@@ -67,7 +67,7 @@ namespace TestTask.Models
             RightOffset = Math.Max(Math.Max(A.X, B.X), Math.Max(B.X, C.X));
             BottomOffset = Math.Max(Math.Max(A.Y, B.Y), Math.Max(B.Y, C.Y));
 
-            Crossed += BeepWhenCrossed;
+            Crossed += Beep;
         }
 
         public override void Draw(Graphics g, Pen pen)

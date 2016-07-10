@@ -63,7 +63,7 @@ namespace TestTask
                         if (_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
                         {
                             // левый верхний угол
-                            if (_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                            if (_figures[i].Y < _figures[j].Y && _figures[i].BottomBorder > _figures[j].Y)
                             {
                                 // пересечение по X
                                 if (_figures[i].RightBorder - _figures[j].X < _figures[i].BottomBorder - _figures[j].Y)
@@ -89,7 +89,7 @@ namespace TestTask
                                 }
                             }
                             // левая середина
-                            else if (_figures[i].Y >= _figures[j].Y && _figures[i].BottomBorder <= _figures[j].BottomBorder)
+                            else if (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder)
                             {
                                 _figures[i].ReverseDx(_isRun[i]);
                                 _figures[i].OnCross(this, new FigureEventArgs()
@@ -100,7 +100,7 @@ namespace TestTask
                                 });
                             }
                             // левый нижний угол
-                            else if (_figures[i].Y <= _figures[j].BottomBorder && _figures[i].BottomBorder >= _figures[j].BottomBorder)
+                            else if (_figures[i].Y < _figures[j].BottomBorder && _figures[i].BottomBorder > _figures[j].BottomBorder)
                             {
                                 // пересечение по X
                                 if (_figures[i].RightBorder - _figures[j].X < _figures[j].BottomBorder - _figures[i].Y)
@@ -130,7 +130,7 @@ namespace TestTask
                         else if (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder)
                         {
                             // правый верхний угол
-                            if (_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                            if (_figures[i].Y < _figures[j].Y && _figures[i].BottomBorder > _figures[j].Y)
                             {
                                 // пересечение по X
                                 if (_figures[j].RightBorder - _figures[i].X < _figures[i].BottomBorder - _figures[j].Y)
@@ -156,7 +156,7 @@ namespace TestTask
                                 }
                             }
                             // правая середина 
-                            else if (_figures[i].Y >= _figures[j].Y && _figures[i].BottomBorder <= _figures[j].BottomBorder)
+                            else if (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder)
                             {
                                 _figures[i].ReverseDx(_isRun[i]);
                                 _figures[i].OnCross(this, new FigureEventArgs()
@@ -167,7 +167,7 @@ namespace TestTask
                                 });
                             }
                             // правый нижний угол
-                            else if (_figures[i].Y <= _figures[j].BottomBorder  && _figures[i].BottomBorder >= _figures[j].BottomBorder)
+                            else if (_figures[i].Y < _figures[j].BottomBorder  && _figures[i].BottomBorder > _figures[j].BottomBorder)
                             {
                                 // пересечение по X
                                 if (_figures[j].RightBorder - _figures[i].X < _figures[j].BottomBorder - _figures[i].Y)

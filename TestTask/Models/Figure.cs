@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -69,20 +70,21 @@ namespace TestTask.Models
             Crossed?.Invoke(sender, e);
             Debug.WriteLine("X:{0}, Y:{1}, Type:{2}, DateTime:{3}", e.X, e.Y, e.Type, e.DateTime);
         }
-        public void BeepWhenCrossed(object sender, FigureEventArgs e)
+        public void Beep(object sender, FigureEventArgs e)
         {
-            Console.Beep();
+            new Thread(Console.Beep).Start();
+            //Console.Beep();
         }
 
         public void AddBeep()
         {
-            Crossed += BeepWhenCrossed;
+            Crossed += Beep;
         }
         public void RemoveBeep()
         {
             if (Crossed != null)
             {
-                Crossed -= BeepWhenCrossed;
+                Crossed -= Beep;
             }
         }
 

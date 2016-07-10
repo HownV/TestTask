@@ -42,7 +42,7 @@ namespace TestTask.Models
                 Dy = Randomizer.GetInt32(-4, 4);
             } while (Dx == 0 && Dy == 0);
 
-            Crossed += BeepWhenCrossed;
+            Crossed += Beep;
         }
 
         public override void Draw(Graphics g, Pen pen)
