@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using TestTask.Interfaces;
 using TestTask.Models;
+using TestTask.Models.EventArgs;
 using Rectangle = TestTask.Models.Rectangle;
 
 namespace TestTask
@@ -55,57 +57,140 @@ namespace TestTask
                 {
                     for (int j = 0; j < _figures.Count; j++)
                     {
-                        //if (i == j)
-                        //    continue;
-                        //if ((_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
-                        //        //&& _figures[i].RightBorder <= _figures[j].RightBorder)
-                        //    || (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder 
-                        //        && _figures[i].RightBorder >= _figures[j].RightBorder))
-                        //{
-                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
-                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
-                        //    {
-                        //        //if(_figures[i].Dx)
-                        //        _figures[i].ReverseDx(_isRun[i]);
-                        //    }
-                        //}
-                        //else if (_figures[i].X >= _figures[j].X && _figures[i].RightBorder <= _figures[j].RightBorder)
-                        //{
-                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
-                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
-                        //    {
-                        //        _figures[i].ReverseDy(_isRun[i]);
-                        //    }
-                        //}
-
-                        // новая эра
                         if (i == j)
                             continue;
-                        if (_figures[i].X < _figures[j].X && _figures[i].RightBorder >= _figures[j].X
-                            && ((_figures[i].Y <_figures[j].Y && _figures[i].BottomBorder > _figures[j].Y) || 
-                            (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder) ||
-                            (_figures[i].Y < _figures[j].BottomBorder && _figures[i].BottomBorder > _figures[j].BottomBorder)))
+                        // пересечение (в основном) слева направо
+                        if (_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
                         {
-                            if(_figures[i].Dx > 0)
-                                _figures[i].ReverseDx(_isRun[i]); // столкновение чётко слева
-                            else 
-                                _figures[i].ReverseDy(_isRun[i]); // столкновение справа
-                        }
-                        else if (_figures[i].X > _figures[j].X && _figures[i].X <= _figures[j].RightBorder 
-                            && ((_figures[i].Y < _figures[j].Y && _figures[i].BottomBorder > _figures[j].Y) ||
-                            (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder) ||
-                            (_figures[i].Y < _figures[j].BottomBorder && _figures[i].BottomBorder > _figures[j].BottomBorder)))
-                        {
-                            if (_figures[i].RightBorder > _figures[j].RightBorder)
+                            // левый верхний угол
+                            if (_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
                             {
-                                if (_figures[i].Dx < 0)
-                                    _figures[i].ReverseDx(_isRun[i]); //столкновение чётко справа
+                                // пересечение по X
+                                if (_figures[i].RightBorder - _figures[j].X < _figures[i].BottomBorder - _figures[j].Y)
+                                {
+                                    _figures[i].ReverseDx(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].RightBorder,
+                                        Y = _figures[i].BottomBorder - _figures[j].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                                // пересечение по Y
                                 else
-                                    _figures[i].ReverseDy(_isRun[i]); //столкновение слева
+                                {
+                                    _figures[i].ReverseDy(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].RightBorder - _figures[j].X,
+                                        Y = _figures[i].BottomBorder,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
                             }
-                            else
+                            // левая середина
+                            else if (_figures[i].Y >= _figures[j].Y && _figures[i].BottomBorder <= _figures[j].BottomBorder)
                             {
-                                _figures[i].ReverseDy(_isRun[i]); // столкновение посередине
+                                _figures[i].ReverseDx(_isRun[i]);
+                                _figures[i].OnCross(this, new FigureEventArgs()
+                                {
+                                    X = _figures[i].RightBorder,
+                                    Y = _figures[i].BottomBorder - _figures[i].Y,
+                                    Type = _figures[j].GetType()
+                                });
+                            }
+                            // левый нижний угол
+                            else if (_figures[i].Y <= _figures[j].BottomBorder && _figures[i].BottomBorder >= _figures[j].BottomBorder)
+                            {
+                                // пересечение по X
+                                if (_figures[i].RightBorder - _figures[j].X < _figures[j].BottomBorder - _figures[i].Y)
+                                {
+                                    _figures[i].ReverseDx(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].RightBorder,
+                                        Y = _figures[j].BottomBorder - _figures[i].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                                // пересечение по Y
+                                else
+                                {
+                                    _figures[i].ReverseDy(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].RightBorder - _figures[j].X,
+                                        Y = _figures[i].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                            }
+                        }
+                        // пересечение справа на лево
+                        else if (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder)
+                        {
+                            // правый верхний угол
+                            if (_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                            {
+                                // пересечение по X
+                                if (_figures[j].RightBorder - _figures[i].X < _figures[i].BottomBorder - _figures[j].Y)
+                                {
+                                    _figures[i].ReverseDx(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].X,
+                                        Y = _figures[i].BottomBorder - _figures[j].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                                // пересечение по Y
+                                else
+                                {
+                                    _figures[i].ReverseDy(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[j].RightBorder - _figures[i].X,
+                                        Y = _figures[i].BottomBorder,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                            }
+                            // правая середина 
+                            else if (_figures[i].Y >= _figures[j].Y && _figures[i].BottomBorder <= _figures[j].BottomBorder)
+                            {
+                                _figures[i].ReverseDx(_isRun[i]);
+                                _figures[i].OnCross(this, new FigureEventArgs()
+                                {
+                                    X = _figures[i].X,
+                                    Y = _figures[i].BottomBorder - _figures[i].Y,
+                                    Type = _figures[j].GetType()
+                                });
+                            }
+                            // правый нижний угол
+                            else if (_figures[i].Y <= _figures[j].BottomBorder  && _figures[i].BottomBorder >= _figures[j].BottomBorder)
+                            {
+                                // пересечение по X
+                                if (_figures[j].RightBorder - _figures[i].X < _figures[j].BottomBorder - _figures[i].Y)
+                                {
+                                    _figures[i].ReverseDx(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[i].X,
+                                        Y = _figures[j].BottomBorder - _figures[i].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
+                                // пересечеине по Y
+                                else
+                                {
+                                    _figures[i].ReverseDy(_isRun[i]);
+                                    _figures[i].OnCross(this, new FigureEventArgs()
+                                    {
+                                        X = _figures[j].RightBorder - _figures[i].X,
+                                        Y = _figures[i].Y,
+                                        Type = _figures[j].GetType()
+                                    });
+                                }
                             }
                         }
                     }
@@ -122,23 +207,38 @@ namespace TestTask
         private void btnTriangle_Click(object sender, EventArgs e)
         {
             var triangle = new Triangle(pbMain.Width, pbMain.Height);
-            _figures.Add(triangle);
-            _isRun.Add(true);
-            listViewFigures.Items.Add("Triangle" +  _figures.Count);
+            if (triangle.IsCoordinatesCorrect(_figures))
+            {
+                _figures.Add(triangle);
+                _isRun.Add(true);
+                listViewFigures.Items.Add("Triangle" + _figures.Count);
+                listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
+                    Color.FromArgb(triangle.Color[0], triangle.Color[1], triangle.Color[2], triangle.Color[3]);
+            }
         }
         private void btnCircle_Click(object sender, EventArgs e)
         {
             var circle = new Circle(pbMain.Width, pbMain.Height);
-            _figures.Add(circle);
-            _isRun.Add(true);
-            listViewFigures.Items.Add("Circle" +  _figures.Count);
+            if (circle.IsCoordinatesCorrect(_figures))
+            {
+                _figures.Add(circle);
+                _isRun.Add(true);
+                listViewFigures.Items.Add("Circle" + _figures.Count);
+                listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
+                    Color.FromArgb(circle.Color[0], circle.Color[1], circle.Color[2], circle.Color[3]);
+            }
         }
         private void btnRectangle_Click(object sender, EventArgs e)
         {
             var rectangle = new Rectangle(pbMain.Width, pbMain.Height);
-            _figures.Add(rectangle);
-            _isRun.Add(true);
-            listViewFigures.Items.Add("Rectangle" + _figures.Count);
+            if (rectangle.IsCoordinatesCorrect(_figures))
+            {
+                _figures.Add(rectangle);
+                _isRun.Add(true);
+                listViewFigures.Items.Add("Rectangle" + _figures.Count);
+                listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
+                    Color.FromArgb(rectangle.Color[0], rectangle.Color[1], rectangle.Color[2], rectangle.Color[3]);
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -352,5 +452,57 @@ namespace TestTask
             Close();
             //Debug.WriteLine(result);
         }
+
+        private void bntAddEvent_Click(object sender, EventArgs e)
+        {
+            var selectedItems = listViewFigures.SelectedItems;
+
+            if (selectedItems.Count > 0)
+            {
+                for (var i = 0; i < selectedItems.Count; i++)
+                {
+                    var index = listViewFigures.Items.IndexOf((selectedItems[i]));
+                    _figures[index].AddBeep();
+                }
+            }
+        }
+
+        private void btnRemoveEvent_Click(object sender, EventArgs e)
+        {
+            var selectedItems = listViewFigures.SelectedItems;
+
+            if (selectedItems.Count > 0)
+            {
+                for (var i = 0; i < selectedItems.Count; i++)
+                {
+                    var index = listViewFigures.Items.IndexOf((selectedItems[i]));
+                    _figures[index].RemoveBeep();
+                }
+            }
+        }
     }
 }
+
+/*
+                        //if (i == j)
+                        //    continue;
+                        //if ((_figures[i].X <= _figures[j].X && _figures[i].RightBorder >= _figures[j].X)
+                        //        //&& _figures[i].RightBorder <= _figures[j].RightBorder)
+                        //    || (_figures[i].X >= _figures[j].X && _figures[i].X <= _figures[j].RightBorder 
+                        //        && _figures[i].RightBorder >= _figures[j].RightBorder))
+                        //{
+                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                        //    {
+                        //        //if(_figures[i].Dx)
+                        //        _figures[i].ReverseDx(_isRun[i]);
+                        //    }
+                        //}
+                        //else if (_figures[i].X >= _figures[j].X && _figures[i].RightBorder <= _figures[j].RightBorder)
+                        //{
+                        //    if ((_figures[i].Y <= _figures[j].Y && _figures[i].BottomBorder >= _figures[j].Y)
+                        //        || (_figures[i].Y >= _figures[j].Y && _figures[i].Y <= _figures[j].BottomBorder))
+                        //    {
+                        //        _figures[i].ReverseDy(_isRun[i]);
+                        //    }
+                        //}*/

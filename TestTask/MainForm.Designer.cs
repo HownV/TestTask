@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.pnlButtons = new System.Windows.Forms.Panel();
+            this.btnRemoveEvent = new System.Windows.Forms.Button();
+            this.bntAddEvent = new System.Windows.Forms.Button();
             this.cbLocalization = new System.Windows.Forms.ComboBox();
             this.btnStopRun = new System.Windows.Forms.Button();
             this.btnRectangle = new System.Windows.Forms.Button();
@@ -55,12 +57,28 @@
             // pnlButtons
             // 
             resources.ApplyResources(this.pnlButtons, "pnlButtons");
+            this.pnlButtons.Controls.Add(this.btnRemoveEvent);
+            this.pnlButtons.Controls.Add(this.bntAddEvent);
             this.pnlButtons.Controls.Add(this.cbLocalization);
             this.pnlButtons.Controls.Add(this.btnStopRun);
             this.pnlButtons.Controls.Add(this.btnRectangle);
             this.pnlButtons.Controls.Add(this.btnCircle);
             this.pnlButtons.Controls.Add(this.btnTriangle);
             this.pnlButtons.Name = "pnlButtons";
+            // 
+            // btnRemoveEvent
+            // 
+            resources.ApplyResources(this.btnRemoveEvent, "btnRemoveEvent");
+            this.btnRemoveEvent.Name = "btnRemoveEvent";
+            this.btnRemoveEvent.UseVisualStyleBackColor = true;
+            this.btnRemoveEvent.Click += new System.EventHandler(this.btnRemoveEvent_Click);
+            // 
+            // bntAddEvent
+            // 
+            resources.ApplyResources(this.bntAddEvent, "bntAddEvent");
+            this.bntAddEvent.Name = "bntAddEvent";
+            this.bntAddEvent.UseVisualStyleBackColor = true;
+            this.bntAddEvent.Click += new System.EventHandler(this.bntAddEvent_Click);
             // 
             // cbLocalization
             // 
@@ -120,7 +138,7 @@
             // timer
             // 
             this.timer.Enabled = true;
-            this.timer.Interval = 25;
+            this.timer.Interval = 15;
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // menuStrip
@@ -216,6 +234,8 @@
         private System.Windows.Forms.ComboBox cbLocalization;
         private System.Windows.Forms.ToolStripMenuItem checkInterfacesColizionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem checkMyListToolStripMenuItem;
+        private System.Windows.Forms.Button btnRemoveEvent;
+        private System.Windows.Forms.Button bntAddEvent;
     }
 }
 

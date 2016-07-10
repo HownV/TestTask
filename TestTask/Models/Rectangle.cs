@@ -41,6 +41,8 @@ namespace TestTask.Models
                 Dx = Randomizer.GetInt32(-4, 4);
                 Dy = Randomizer.GetInt32(-4, 4);
             } while (Dx == 0 && Dy == 0);
+
+            Crossed += BeepWhenCrossed;
         }
 
         public override void Draw(Graphics g, Pen pen)

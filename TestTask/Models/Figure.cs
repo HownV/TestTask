@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using TestTask.Interfaces;
 using TestTask.Models;
+using TestTask.Models.EventArgs;
 
 namespace TestTask.Models
 {
@@ -39,7 +40,7 @@ namespace TestTask.Models
         protected bool IsDxReversed;
         protected bool IsDyReversed;
 
-        public virtual event EventHandler<FigureEventArgs> Crossed;
+        public event EventHandler<FigureEventArgs> Crossed;
 
         public Figure()
         {
@@ -62,7 +63,12 @@ namespace TestTask.Models
         {
             MessageBox.Show("Hello from IDrawable");
         }
-        
+
+        public void OnCross(object sender, FigureEventArgs e)
+        {
+            Crossed?.Invoke(sender, e);
+            Debug.WriteLine("X:{0}, Y:{1}, Type:{2}, DateTime:{3}", e.X, e.Y, e.Type, e.DateTime);
+        }
         public void BeepWhenCrossed(object sender, FigureEventArgs e)
         {
             Console.Beep();
@@ -72,17 +78,46 @@ namespace TestTask.Models
         {
             Crossed += BeepWhenCrossed;
         }
+        public void RemoveBeep()
+        {
+            if (Crossed != null)
+            {
+                Crossed -= BeepWhenCrossed;
+            }
+        }
 
         public void ReverseDx(bool isRun)
         {
-            if(isRun)
+            if (isRun)
+            {
                 IsDxReversed = true;
+            }
         }
 
         public void ReverseDy(bool isRun)
         {
             if (isRun)
                 IsDyReversed = true;
+        }
+
+        public bool IsCoordinatesCorrect(List<Figure> figures)
+        {
+            foreach (var figure in figures)
+            {
+                if ((X >= figure.X && X <= figure.RightBorder) 
+                    || (RightBorder >= figure.X && RightBorder <= figure.RightBorder)
+                    || (X <= figure.X && RightBorder >= figure.RightBorder))
+                {
+                    if ((BottomBorder >= figure.Y && BottomBorder <= figure.BottomBorder)
+                        || (Y >= figure.Y && Y <= figure.BottomBorder)
+                        || (Y <= figure.Y && BottomBorder >= figure.BottomBorder))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
     }
 }

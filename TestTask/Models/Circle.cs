@@ -21,7 +21,7 @@ namespace TestTask.Models
         public override int RightBorder => X + Radius*2;
         public override int BottomBorder => Y + Radius*2;
 
-        public sealed override event EventHandler<FigureEventArgs> Crossed;
+        //public sealed override event EventHandler<FigureEventArgs> Crossed;
 
         public Circle()
         {
@@ -51,11 +51,6 @@ namespace TestTask.Models
 
         public override void Move(int xMax, int yMax)
         {
-            //if ()
-            //    Dx = -Dx;
-            //if ()
-            //    Dy = -Dy;
-
             if (IsDxReversed || X < 0 || X > xMax - Radius * 2)
             {
                 Dx = -Dx;
