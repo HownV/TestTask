@@ -172,7 +172,7 @@
   <data name="checkInterfaceColizionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
     <value>12, 20</value>
   </data>
-  <data name="checkInterfaceColizionToolStripMenuItem.Text" xml:space="preserve">
+  <data name="checkInterfacesColizionToolStripMenuItem.Text" xml:space="preserve">
     <value>Проверить коллизию интерфейсов</value>
   </data>
   <data name="btnStopRun.Text.Run" xml:space="preserve">

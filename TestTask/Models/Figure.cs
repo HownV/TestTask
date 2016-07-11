@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using RandomizingLibrary;
 using TestTask.Interfaces;
 using TestTask.Models;
 using TestTask.Models.EventArgs;
@@ -47,7 +48,7 @@ namespace TestTask.Models
         {
         }
 
-        public virtual void Move(int xMax, int yMaxm)
+        public virtual void Move(int xMax, int yMax)
         {
         }
 
@@ -70,9 +71,10 @@ namespace TestTask.Models
             Crossed?.Invoke(sender, e);
             Debug.WriteLine("X:{0}, Y:{1}, Type:{2}, DateTime:{3}", e.X, e.Y, e.Type, e.DateTime);
         }
+
         public void Beep(object sender, FigureEventArgs e)
         {
-            new Thread(Console.Beep).Start();
+            //new Thread(Console.Beep).Start();
             //Console.Beep();
         }
 
@@ -95,17 +97,19 @@ namespace TestTask.Models
                 IsDxReversed = true;
             }
         }
-
         public void ReverseDy(bool isRun)
         {
             if (isRun)
                 IsDyReversed = true;
         }
 
-        public bool IsCoordinatesCorrect(List<Figure> figures)
+        public bool IsCoordinatesCorrect(IList<Figure> figures)
         {
             foreach (var figure in figures)
             {
+                if(figure.Equals(this))
+                    continue;
+
                 if ((X >= figure.X && X <= figure.RightBorder) 
                     || (RightBorder >= figure.X && RightBorder <= figure.RightBorder)
                     || (X <= figure.X && RightBorder >= figure.RightBorder))
@@ -120,6 +124,24 @@ namespace TestTask.Models
             }
 
             return true;
+        }
+
+        public virtual bool Validate(int xMax, int yMax)
+        {
+           throw new NotImplementedException();
+        }
+
+        public void PutIntoCorrectPlace(IList<Figure> figures, IList<bool> isRun, int i, int xMax, int yMax)
+        {
+            new Thread(delegate()
+            {
+                do
+                {
+                    X = Randomizer.GetInt32(xMax - (RightBorder - X));
+                    Y = Randomizer.GetInt32(yMax - (BottomBorder - Y));
+                } while (!IsCoordinatesCorrect(figures));
+            }).Start();
+            isRun[i] = true;
         }
     }
 }

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RandomizingLibrary;
 using TestTask.Models;
+using TestTask.Models.Exceptions;
 
 namespace TestTask.Models
 {
@@ -20,9 +21,7 @@ namespace TestTask.Models
 
         public override int RightBorder => X + Radius*2;
         public override int BottomBorder => Y + Radius*2;
-
-        //public sealed override event EventHandler<FigureEventArgs> Crossed;
-
+        
         public Circle()
         {
         }
@@ -51,18 +50,28 @@ namespace TestTask.Models
 
         public override void Move(int xMax, int yMax)
         {
-            if (IsDxReversed || X < 0 || X > xMax - Radius * 2)
+            Validate(xMax, yMax);
+            if (IsDxReversed || X < 0 || X > xMax - Radius*2)
             {
                 Dx = -Dx;
                 IsDxReversed = false;
             }
-            if (IsDyReversed || Y < 0 || Y > yMax - Radius * 2)
+            if (IsDyReversed || Y < 0 || Y > yMax - Radius*2)
             {
                 Dy = -Dy;
                 IsDyReversed = false;
             }
             X += Dx;
             Y += Dy;
+        }
+
+        public override bool Validate(int xMax, int yMax)
+        {
+            if (X > xMax - Radius * 2 + 4 || Y > yMax - Radius * 2 + 4)
+            {
+                throw new FigureOutOfRangeException();
+            }
+            return true;
         }
     }
 }

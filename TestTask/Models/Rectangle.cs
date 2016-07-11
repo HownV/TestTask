@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using RandomizingLibrary;
 using TestTask.Models;
+using TestTask.Models.Exceptions;
 
 namespace TestTask.Models
 {
@@ -21,9 +22,7 @@ namespace TestTask.Models
 
         public override int RightBorder => X + Width;
         public override int BottomBorder => Y + Height;
-
-        //public override event EventHandler<FigureEventArgs> Crossed;
-
+        
         public Rectangle()
         {
         }
@@ -56,10 +55,7 @@ namespace TestTask.Models
 
         public override void Move(int xMax, int yMax)
         {
-            //if ()
-            //    Dx = -Dx;
-            //if ()
-            //    Dy = -Dy;
+            Validate(xMax, yMax);
 
             if (IsDxReversed || X < 0 || X > xMax - Width)
             {
@@ -74,6 +70,15 @@ namespace TestTask.Models
 
             X += Dx;
             Y += Dy;
+        }
+
+        public override bool Validate(int xMax, int yMax)
+        {
+            if (X > xMax - Width + 4 || Y > yMax - Height + 4)
+            {
+                throw new FigureOutOfRangeException();
+            }
+            return true;
         }
     }
 }

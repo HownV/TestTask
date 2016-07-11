@@ -55,6 +55,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -77,6 +78,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\Circle.cs" />
+    <Compile Include="Models\Exceptions\FigureOutOfRangeException.cs" />
     <Compile Include="Models\Figure.cs" />
     <Compile Include="Models\EventArgs\FigureEventArgs.cs" />
     <Compile Include="Models\MyList\MyList.cs" />

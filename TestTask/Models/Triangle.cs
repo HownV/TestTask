@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using RandomizingLibrary;
+using TestTask.Models.Exceptions;
 
 
 namespace TestTask.Models
@@ -28,9 +29,7 @@ namespace TestTask.Models
         public readonly int RightOffset;
         [DataMember]
         public readonly int BottomOffset;
-
-        //public event EventHandler<FigureEventArgs> Crossed;
-
+        
         public Triangle()
         {
         }
@@ -80,10 +79,7 @@ namespace TestTask.Models
 
         public override void Move(int xMax, int yMax)
         {
-            //if ()
-            //    Dx = -Dx;
-            //if ()
-            //    Dy = -Dy;
+            Validate(xMax, yMax);
 
             if (IsDxReversed || X < 0 || X > xMax - RightOffset)
             {
@@ -98,6 +94,15 @@ namespace TestTask.Models
             }
             X += Dx;
             Y += Dy;
+        }
+
+        public override bool Validate(int xMax, int yMax)
+        {
+            if (X > xMax - RightOffset + 4 || Y > yMax - BottomOffset + 4)
+            {
+                throw new FigureOutOfRangeException();
+            }
+            return true;
         }
     }
 }
