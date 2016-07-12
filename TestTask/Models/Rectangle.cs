@@ -41,6 +41,8 @@ namespace TestTask.Models
                 Dy = Randomizer.GetInt32(-4, 4);
             } while (Dx == 0 && Dy == 0);
 
+            IsRun = true;
+
             Crossed += Beep;
         }
 

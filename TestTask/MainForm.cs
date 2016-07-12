@@ -1,25 +1,17 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Globalization;
-using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Resources;
-using System.Runtime.Remoting.Contexts;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Runtime.Serialization.Json;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Serialization;
+using log4net;
 using TestTask.Interfaces;
 using TestTask.Models;
 using TestTask.Models.EventArgs;
@@ -28,39 +20,62 @@ using Rectangle = TestTask.Models.Rectangle;
 
 namespace TestTask
 {
+    //TODO:
+    // 1. Исправить восстановление треугольника после десериализации
+    // 2. Исправить .bin сериализацию
     public partial class MainForm : Form
     {
+        private readonly ILog _log;
         private readonly ResourceManager _resourceManager;
         private readonly Pen _pen;
-
         
         private IList<Figure> _figures;
-        private IList<bool> _isRun;
+        //private IList<bool> _isRun;
 
         public MainForm()
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
             Thread.CurrentThread.CurrentUICulture = Thread.CurrentThread.CurrentCulture;
 
+            _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
             _resourceManager = new ResourceManager("TestTask.MainForm", typeof(MainForm).Assembly);
             _pen = new Pen(Color.Black);
             _figures = new SynchronizedCollection<Figure>();
-            _isRun = new SynchronizedCollection<bool>();
+            //_isRun = new SynchronizedCollection<bool>();
             
             InitializeComponent();
             
             cbLocalization.SelectedIndex = 0;
 
-            new Thread(delegate() 
-            {
-                while (true)
-                {
-                    Thread.Sleep(14);
-                    pbMain.Refresh();
-                }
-            }).Start();
+            Thread thread = new Thread(InfiniteMovement) { IsBackground = true };
+            thread.Start();
         }
-        
+
+        private void InfiniteMovement()
+        {
+            while (true)
+            {
+                Thread.Sleep(14);
+                for (int i = 0; i < _figures.Count; i++)
+                {
+                    if (_figures[i].IsRun)
+                    {
+                        try
+                        {
+                            _figures[i].Move(pbMain.Width, pbMain.Height);
+                        }
+                        catch (FigureOutOfRangeException)
+                        {
+                            _log.Warn(
+                                $"Figure[{i}] as {_figures[i].GetType().Name} is out of PictureBox(pbMain) boundaries.");
+
+                            _figures[i].PutIntoCorrectPlace(_figures, i, pbMain.Width, pbMain.Height);
+                        }
+                    }
+                }
+            }
+        }
+
         private void pbMain_Paint(object sender, PaintEventArgs e)
         {
             if (_figures.Count > 0)
@@ -76,22 +91,9 @@ namespace TestTask
                     }
                 }
 
-                for (int i = 0; i < _figures.Count; i++)
+                foreach (Figure figure in _figures)
                 {
-                    if (_isRun[i])
-                    {
-                        try
-                        {
-                            _figures[i].Move(pbMain.Width, pbMain.Height);
-                        }
-                        catch (FigureOutOfRangeException exception)
-                        {
-                            _isRun[i] = false;
-                            _figures[i].PutIntoCorrectPlace(_figures, _isRun, i, pbMain.Width, pbMain.Height);
-                            // ловлю что-то, пишу в логи 
-                        }
-                    }
-                    _figures[i].Draw(g, _pen);
+                    figure.Draw(g, _pen);
                 }
             }
         }
@@ -107,7 +109,7 @@ namespace TestTask
                     // пересечение по X
                     if (_figures[i].RightBorder - _figures[j].X < _figures[i].BottomBorder - _figures[j].Y)
                     {
-                        _figures[i].ReverseDx(_isRun[i]);
+                        _figures[i].ReverseDx();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].RightBorder,
@@ -118,7 +120,7 @@ namespace TestTask
                     // пересечение по Y
                     else
                     {
-                        _figures[i].ReverseDy(_isRun[i]);
+                        _figures[i].ReverseDy();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].RightBorder - _figures[j].X,
@@ -130,7 +132,7 @@ namespace TestTask
                 // левая середина
                 else if (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder)
                 {
-                    _figures[i].ReverseDx(_isRun[i]);
+                    _figures[i].ReverseDx();
                     _figures[i].OnCross(this, new FigureEventArgs()
                     {
                         X = _figures[i].RightBorder,
@@ -144,7 +146,7 @@ namespace TestTask
                     // пересечение по X
                     if (_figures[i].RightBorder - _figures[j].X < _figures[j].BottomBorder - _figures[i].Y)
                     {
-                        _figures[i].ReverseDx(_isRun[i]);
+                        _figures[i].ReverseDx();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].RightBorder,
@@ -155,7 +157,7 @@ namespace TestTask
                     // пересечение по Y
                     else
                     {
-                        _figures[i].ReverseDy(_isRun[i]);
+                        _figures[i].ReverseDy();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].RightBorder - _figures[j].X,
@@ -174,7 +176,7 @@ namespace TestTask
                     // пересечение по X
                     if (_figures[j].RightBorder - _figures[i].X < _figures[i].BottomBorder - _figures[j].Y)
                     {
-                        _figures[i].ReverseDx(_isRun[i]);
+                        _figures[i].ReverseDx();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].X,
@@ -185,7 +187,7 @@ namespace TestTask
                     // пересечение по Y
                     else
                     {
-                        _figures[i].ReverseDy(_isRun[i]);
+                        _figures[i].ReverseDy();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[j].RightBorder - _figures[i].X,
@@ -197,7 +199,7 @@ namespace TestTask
                 // правая середина 
                 else if (_figures[i].Y > _figures[j].Y && _figures[i].BottomBorder < _figures[j].BottomBorder)
                 {
-                    _figures[i].ReverseDx(_isRun[i]);
+                    _figures[i].ReverseDx();
                     _figures[i].OnCross(this, new FigureEventArgs()
                     {
                         X = _figures[i].X,
@@ -211,7 +213,7 @@ namespace TestTask
                     // пересечение по X
                     if (_figures[j].RightBorder - _figures[i].X < _figures[j].BottomBorder - _figures[i].Y)
                     {
-                        _figures[i].ReverseDx(_isRun[i]);
+                        _figures[i].ReverseDx();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[i].X,
@@ -222,7 +224,7 @@ namespace TestTask
                     // пересечеине по Y
                     else
                     {
-                        _figures[i].ReverseDy(_isRun[i]);
+                        _figures[i].ReverseDy();
                         _figures[i].OnCross(this, new FigureEventArgs()
                         {
                             X = _figures[j].RightBorder - _figures[i].X,
@@ -233,26 +235,6 @@ namespace TestTask
                 }
             }
         }
-
-        //private List<Tuple<int, int, int, int>> CreateFreePlaces()
-        //{
-        //    List<Tuple<int, int, int, int>> freePlaces = new List<Tuple<int, int, int, int>>();
-
-        //    Figure[] arrayOfFigures = new Figure[_figures.Count];
-        //    _figures.CopyTo(arrayOfFigures, 0);
-
-        //    List<Figure> sortFigures = arrayOfFigures.ToList();
-        //    sortFigures.Sort((f1, f2) =>  f1.X.CompareTo(f2.X));
-
-        //    int x = 0, rightBorder = 0;
-        //    int y = 0, bottomBorder = 0;
-        //    foreach (Figure figure in sortFigures)
-        //    {
-                
-        //    }
-
-        //    return freePlaces;
-        //}
         
         private void btnTriangle_Click(object sender, EventArgs e)
         {
@@ -260,7 +242,6 @@ namespace TestTask
             if (triangle.IsCoordinatesCorrect(_figures))
             {
                 _figures.Add(triangle);
-                _isRun.Add(true);
                 listViewFigures.Items.Add("Triangle" + _figures.Count);
                 listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
                     Color.FromArgb(triangle.Color[0], triangle.Color[1], triangle.Color[2], triangle.Color[3]);
@@ -272,7 +253,6 @@ namespace TestTask
             if (circle.IsCoordinatesCorrect(_figures))
             {
                 _figures.Add(circle);
-                _isRun.Add(true);
                 listViewFigures.Items.Add("Circle" + _figures.Count);
                 listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
                     Color.FromArgb(circle.Color[0], circle.Color[1], circle.Color[2], circle.Color[3]);
@@ -284,7 +264,6 @@ namespace TestTask
             if (rectangle.IsCoordinatesCorrect(_figures))
             {
                 _figures.Add(rectangle);
-                _isRun.Add(true);
                 listViewFigures.Items.Add("Rectangle" + _figures.Count);
                 listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor = 
                     Color.FromArgb(rectangle.Color[0], rectangle.Color[1], rectangle.Color[2], rectangle.Color[3]);
@@ -305,15 +284,15 @@ namespace TestTask
                 for (var i = 0; i < selectedItems.Count; i++)
                 {
                     var index = listViewFigures.Items.IndexOf((selectedItems[i]));
-                    if (_isRun[index])
+                    if (_figures[index].IsRun)
                     {
-                        _isRun[index] = false;
+                        _figures[index].IsRun = false;
                         btnStopRun.Text = _resourceManager.GetString("btnStopRun.Text.Run");
                         listViewFigures.Items[index].Font = new Font(listViewFigures.Items[index].Font, FontStyle.Underline);
                     }
                     else
                     {
-                        _isRun[index] = true;
+                        _figures[index].IsRun = true;
                         btnStopRun.Text = _resourceManager.GetString("btnStopRun.Text.Stop");
                         listViewFigures.Items[index].Font = new Font(listViewFigures.Items[index].Font, FontStyle.Regular);
                     }
@@ -330,7 +309,7 @@ namespace TestTask
                 return;
             }
             var index = listViewFigures.Items.IndexOf((selectedItems[0]));
-            btnStopRun.Text = _isRun[index] ? _resourceManager.GetString("btnStopRun.Text.Stop") : _resourceManager.GetString("btnStopRun.Text.Run");
+            btnStopRun.Text = _figures[index].IsRun ? _resourceManager.GetString("btnStopRun.Text.Stop") : _resourceManager.GetString("btnStopRun.Text.Run");
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -361,17 +340,18 @@ namespace TestTask
                 switch (saveAsFileDialog.FilterIndex)
                 {
                     case 1:
-                        var serializer = new XmlSerializer(typeof(List<Figure>));
+                        var serializer = new XmlSerializer(typeof(SynchronizedCollection<Figure>));
                         serializer.Serialize(saveAsFileDialog.OpenFile(), _figures);
                         break;
                     case 2:
-                        var jsonSerializer = new DataContractJsonSerializer(typeof(List<Figure>), 
+                        var jsonSerializer = new DataContractJsonSerializer(typeof(SynchronizedCollection<Figure>), 
                             new Type[] { typeof(Triangle), typeof(Circle), typeof(Rectangle) });
                         jsonSerializer.WriteObject(saveAsFileDialog.OpenFile(), _figures);
                         break;
                     case 3:
-                        var formatter = new BinaryFormatter();
-                        formatter.Serialize(saveAsFileDialog.OpenFile(), _figures);
+                        //var formatter = new BinaryFormatter();
+                        //formatter.Serialize(saveAsFileDialog.OpenFile(), _figures);
+                        MessageBox.Show(".bin serialization now is not supported.");
                         break;
                     default:
                         MessageBox.Show("Data are not saved.");
@@ -395,25 +375,27 @@ namespace TestTask
                 switch (openFileDialog.FilterIndex)
                 {
                     case 1:
-                        var serializer = new XmlSerializer(typeof(List<Figure>));
-                        _figures = (List<Figure>) serializer.Deserialize(openFileDialog.OpenFile());
+                        var serializer = new XmlSerializer(typeof(SynchronizedCollection<Figure>));
+                        _figures = (SynchronizedCollection<Figure>) serializer.Deserialize(openFileDialog.OpenFile());
                         break;
                     case 2:
-                        var jsonSerializer = new DataContractJsonSerializer(typeof(List<Figure>),
+                        var jsonSerializer = new DataContractJsonSerializer(typeof(SynchronizedCollection<Figure>),
                             new Type[] { typeof(Triangle), typeof(Circle), typeof(Rectangle) });
-                        _figures = (List<Figure>) jsonSerializer.ReadObject(openFileDialog.OpenFile());
+                        _figures = (SynchronizedCollection<Figure>) jsonSerializer.ReadObject(openFileDialog.OpenFile());
                         break;
                     case 3:
-                        var formatter = new BinaryFormatter();
-                        _figures = (List<Figure>) formatter.Deserialize(openFileDialog.OpenFile());
+                        //var formatter = new BinaryFormatter();
+                        //_figures = (SynchronizedCollection<Figure>) formatter.Deserialize(openFileDialog.OpenFile());
+                        MessageBox.Show(".bin serialization now is not supported.");
                         break;
                     default:
                         MessageBox.Show("Invalid file format.");
                         return;
                 }
             }
-            if(_isRun.Count != _figures.Count)
-                _isRun = new bool[_figures.Count].ToList();
+            //if(_isRun.Count != _figures.Count)
+            //    _isRun = new bool[_figures.Count].ToList();
+            ReDrawListViewFigures();
             MessageBox.Show(fileName);
         }
 
@@ -530,6 +512,24 @@ namespace TestTask
                 }
             }
         }
+
+        private void ReDrawListViewFigures()
+        {
+            listViewFigures.Items.Clear();
+            foreach (var figure in _figures)
+            {
+                listViewFigures.Items.Add(figure.GetType().Name + _figures.Count);
+                listViewFigures.Items[listViewFigures.Items.Count - 1].ForeColor =
+                    Color.FromArgb(figure.Color[0], figure.Color[1], figure.Color[2], figure.Color[3]);
+
+                listViewFigures.Items[listViewFigures.Items.Count - 1].Font = figure.IsRun
+                    ? new Font(listViewFigures.Items[listViewFigures.Items.Count - 1].Font, FontStyle.Underline)
+                    : new Font(listViewFigures.Items[listViewFigures.Items.Count - 1].Font, FontStyle.Regular);
+            }
+            listViewFigures.SelectedItems.Clear();
+            listViewFigures.Refresh();
+        }
+
     }
 }
 

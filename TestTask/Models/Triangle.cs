@@ -41,7 +41,8 @@ namespace TestTask.Models
                 A = Randomizer.GetPoint(MaxSize);
                 B = Randomizer.GetPoint(MaxSize);
                 C = Randomizer.GetPoint(MaxSize);
-            } while (A == B && B == C && C == A);
+            } while (A == B && B == C && C == A && 
+                    ((A.X != 0 && A.Y != 0) && (B.X != 0 && B.Y != 0) && (C.X != 0 && C.Y != 0)));
 
             Color = Randomizer.GetColorAsByteArray();
 
@@ -52,6 +53,8 @@ namespace TestTask.Models
                 Dx = Randomizer.GetInt32(-4, 4);
                 Dy = Randomizer.GetInt32(-4, 4);
             } while (Dx == 0 && Dy == 0);
+
+            IsRun = true;
             
             int leftOffset = Math.Min(Math.Min(A.X, B.X), Math.Min(B.X, C.X));
             A.X -= leftOffset;

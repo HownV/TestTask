@@ -23,7 +23,7 @@ namespace TestTask.Models
     [Serializable]
     public class Figure : IMovable, IDrawable  
     {
-        public const int MaxSize = 200;
+        public const int MaxSize = 150;
 
         [DataMember]
         public int X { get; set; }
@@ -35,6 +35,8 @@ namespace TestTask.Models
         public int Dy { get; set; }
         [DataMember]
         public byte[] Color { get; set; }
+        [DataMember]
+        public bool IsRun { get; set; }
 
         public virtual int RightBorder { get; set; }
         public virtual int BottomBorder { get; set; }
@@ -90,16 +92,16 @@ namespace TestTask.Models
             }
         }
 
-        public void ReverseDx(bool isRun)
+        public void ReverseDx()
         {
-            if (isRun)
+            if (IsRun)
             {
                 IsDxReversed = true;
             }
         }
-        public void ReverseDy(bool isRun)
+        public void ReverseDy()
         {
-            if (isRun)
+            if (IsRun)
                 IsDyReversed = true;
         }
 
@@ -131,7 +133,7 @@ namespace TestTask.Models
            throw new NotImplementedException();
         }
 
-        public void PutIntoCorrectPlace(IList<Figure> figures, IList<bool> isRun, int i, int xMax, int yMax)
+        public void PutIntoCorrectPlace(IList<Figure> figures, int i, int xMax, int yMax)
         {
             new Thread(delegate()
             {
@@ -141,7 +143,7 @@ namespace TestTask.Models
                     Y = Randomizer.GetInt32(yMax - (BottomBorder - Y));
                 } while (!IsCoordinatesCorrect(figures));
             }).Start();
-            isRun[i] = true;
+            figures[i].IsRun = true;
         }
     }
 }
